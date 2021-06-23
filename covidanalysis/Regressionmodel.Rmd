@@ -1,0 +1,210 @@
+
+
+### Linear Regression
+
+library(readxl)
+library(readr)
+library(ggplot2)
+library(tibble)
+library(dplyr)
+library('data.table')
+library(rsample)
+
+<br/><br/>
+
+
+### 1. 데이터 설정
+
+# 확진자 수 데이터
+covid_data <- fread("kr_regional_daily.csv", encoding = "UTF-8")
+covid_data$date <- as.Date(as.character(covid_data$date), "%Y%m%d")
+
+# 전국 확진자 수
+total <- subset(covid_data, date >= "2020-02-17" & date <= "2020-05-31")
+total_covid <- data.frame(tapply(total$confirmed, total$date, sum))
+total_covid
+write.csv(total_covid, "total_covid")
+
+total_covid <- read.csv("totalcovid.csv")
+total_covid$date <- as.Date(as.character(total_covid$X), "%Y%m%d")
+
+# 코로나 서울 확진자 수
+seoul_covid <- subset(covid_data, region == "서울" & date <= "2020-05-31" & date >= "2020-02-17")
+head(seoul_covid)
+
+# 코로나 대구 확진자 수
+daegu_covid <- subset(covid_data, region == "대구" & date <= "2020-05-31" & date >= "2020-02-17")
+head(daegu_covid)
+
+# 서울 유동인구 수
+seoulflow <- read_csv("seoulflow_2020.csv")
+head(seoulflow)
+
+# 유동인구 19-20
+t_seoulflow <- read.csv("seoulflow.csv")
+head(t_seoulflow)
+
+# 대구 유동인구 수
+daeguflow <- read_csv("daeguflow.csv")
+head(daeguflow)
+
+# 유동인구 19-20
+t_daeguflow <- read.csv("daeguflow_total.csv")
+head(t_daeguflow)
+
+
+# 물류데이터(식품)
+CJ <- read_excel("CJ.xlsx")
+head(CJ)
+CJ <- subset(CJ, CJ$DL_YMD >= 20190217)
+CJ <- subset(CJ, CJ$DL_YMD >= 20200217 | CJ$DL_YMD <= 20190531)
+CJ$DL_YMD <- as.Date(as.character(CJ$DL_YMD), "%Y%m%d")
+CJ
+# 서울의 물류 건수
+CJseoul <- subset(CJ,CTPV_NM == "서울특별시" &  DL_GD_LCLS_NM == "식품" & (DL_YMD <= "2020-05-31" & DL_YMD >= "2020-02-17")|(DL_YMD <= "2019-05-31" & DL_YMD >= "2019-02-17"))
+CJseoul_mean <- data.frame(tapply(CJseoul$INVC_CONT, CJseoul$DL_YMD, mean))
+CJseoul_mean <- rownames_to_column(CJseoul_mean)
+CJseoul_mean
+
+#대구의 물류 건수
+CJdaegu <- subset(CJ,CTPV_NM == "대구광역시" &  DL_GD_LCLS_NM == "식품" & (DL_YMD <= "2020-05-31" & DL_YMD >= "2020-02-17")|(DL_YMD <= "2019-05-31" & DL_YMD >= "2019-02-17"))
+CJdaegu_mean <- data.frame(tapply(CJdaegu$INVC_CONT, CJdaegu$DL_YMD, mean))
+CJdaegu_mean <- rownames_to_column(CJdaegu_mean)
+head(CJdaegu_mean)
+
+
+- 카드매출 데이터(요식업)
+
+# 카드매출
+card <- fread("CARD_SPENDING_RESIDENT.txt")
+card$STD_DD <- as.Date(as.character(card$STD_DD), "%Y%m%d")
+head(card)
+
+# 요식업, 음료식품
+card <- subset(card, (STD_DD >= "2019-02-17" & STD_DD <= "2019-05-31")|(STD_DD >= "2020-02-17"))
+card <- subset(card, (MCT_CAT_CD == 80 | MCT_CAT_CD == 81))
+
+# 카드매출의 평균값(서울 + 대구)
+cardmean <- data.frame(tapply(card$USE_AMT, card$STD_DD, mean))
+cardmean <- rownames_to_column(cardmean)
+str(cardmean)
+
+# 카드매출의 평균값_서울
+cardseoul <- subset(card, (GU_CD == 140 |GU_CD == 350))
+cardseoul_mean <- data.frame(tapply(cardseoul$USE_AMT, cardseoul$STD_DD, mean))
+cardseoul_mean <- rownames_to_column(cardseoul_mean)
+str(cardseoul_mean)
+
+# 카드매출의 평균값_대구
+carddaegu <- subset(card, (GU_CD == 260 |GU_CD == 110))
+carddaegu_mean <- data.frame(tapply(carddaegu$USE_AMT, carddaegu$STD_DD, mean))
+carddaegu_mean <- rownames_to_column(carddaegu_mean)
+str(carddaegu_mean)
+
+ : 카드매출 데이터 중, 날짜를 기준으로 모든 금액을 평균한 것
+<br/><br/>
+
+
+### 2. 분석을 위한 데이터프레임 만들기
+
+<br/>
+- 종속변수가 카드매출_서울 기준일 때
+
+# 카드매출_서울
+cardseoul_mean$covid <- total_covid$Confirmed # 전국 확진자 수
+cardseoul_mean$seoulcovid <- t_seoulflow$Confirmed # 서울 코로나 확진자 수
+cardseoul_mean$daegucovid <- t_daeguflow$Confirmed # 대구 코로나 확진자 수
+
+cardseoul_mean$seoulflowMean <- t_seoulflow$mean # 서울 유동인구 평균
+cardseoul_mean$seoulflowSum <- t_seoulflow$V1 # 서울 유동인구 합
+
+cardseoul_mean$daeguflowMean <- t_daeguflow$mean # 대구 유동인구 평균
+cardseoul_mean$daeguflowSum <- t_daeguflow$V1 # 대구 유동인구 합
+cardseoul_mean$cjseoul <- CJseoul_mean$tapply.CJseoul.INVC_CONT..CJseoul.DL_YMD..mean. # 서울 물류 데이터 평균
+cardseoul_mean$cjdaegu <- CJdaegu_mean$tapply.CJdaegu.INVC_CONT..CJdaegu.DL_YMD..mean. # 대구 물류 데이터 평균
+
+CJseoul_mean
+cardseoul_mean
+
+<br/>
+
+- 종속변수가 카드매출_대구 기준일 때
+
+# 카드매출_대구
+carddaegu_mean$covid <- total_covid$Confirmed # 전국 확진자 수
+carddaegu_mean$seoulcovid <- t_seoulflow$Confirmed # 서울 코로나 확진자 수
+carddaegu_mean$daegucovid <- t_daeguflow$Confirmed # 대구 코로나 확진자 수
+
+carddaegu_mean$seoulflowMean <- t_seoulflow$mean # 서울 유동인구 평균
+carddaegu_mean$seoulflowSum <- t_seoulflow$V1 # 서울 유동인구 합
+
+carddaegu_mean$daeguflowMean <- t_daeguflow$mean # 대구 유동인구 평균
+carddaegu_mean$daeguflowSum <- t_daeguflow$V1 # 대구 유동인구 합
+carddaegu_mean$cjseoul <- CJseoul_mean$tapply.CJseoul.INVC_CONT..CJseoul.DL_YMD..mean. # 서울 물류 데이터 평균
+carddaegu_mean$cjdaegu <- CJdaegu_mean$tapply.CJdaegu.INVC_CONT..CJdaegu.DL_YMD..mean. # 대구 물류 데이터 평균
+
+<br/>
+
+- 종속변수가 카드매출_서울+대구 기준일 때
+
+# 카드매출_대구
+cardmean$covid <- total_covid$Confirmed # 전국 확진자 수
+cardmean$seoulcovid <- t_seoulflow$Confirmed # 서울 코로나 확진자 수
+cardmean$daegucovid <- t_daeguflow$Confirmed # 대구 코로나 확진자 수
+
+cardmean$seoulflowMean <- t_seoulflow$mean # 서울 유동인구 평균
+cardmean$seoulflowSum <- t_seoulflow$V1 # 서울 유동인구 합
+
+cardmean$daeguflowMean <- t_daeguflow$mean # 대구 유동인구 평균
+cardmean$daeguflowSum <- t_daeguflow$V1 # 대구 유동인구 합
+cardmean$cjseoul <- CJseoul_mean$tapply.CJseoul.INVC_CONT..CJseoul.DL_YMD..mean. # 서울 물류 데이터 평균
+cardmean$cjdaegu <- CJdaegu_mean$tapply.CJdaegu.INVC_CONT..CJdaegu.DL_YMD..mean. # 대구 물류 데이터 평균
+
+
+<br/>
+
+
+### 3. Linear Regression Analysis
+
+<br/>
+- model1<br/>
+Y : 카드매출 서울
+
+set.seed(123)
+split <- initial_split(cardseoul_mean, prop = 0.7, strata = "tapply.cardseoul.USE_AMT..cardseoul.STD_DD..mean.")
+
+seoul_train <- training(split)
+seoul_test <- testing(split)
+
+model1 <- lm(tapply.cardseoul.USE_AMT..cardseoul.STD_DD..mean. ~ covid + seoulcovid + seoulflowMean + cjseoul, data = seoul_train)
+summary(model1)
+
+cardseoul_mean
+
+<br/>
+- model2<br/>
+Y : 카드매출 대구
+
+set.seed(123)
+split <- initial_split(carddaegu_mean, prop = 0.7, strata = "tapply.carddaegu.USE_AMT..carddaegu.STD_DD..mean.")
+
+daegu_train <- training(split)
+daegu_test <- testing(split)
+
+model2 <- lm(tapply.carddaegu.USE_AMT..carddaegu.STD_DD..mean. ~ covid + daegucovid + daeguflowMean + cjdaegu, data = daegu_train)
+summary(model2)
+
+
+<br/>
+- model3<br/>
+Y : 카드매출 서울 + 대구
+
+set.seed(123)
+split <- initial_split(cardmean, prop = 0.7, strata = "tapply.card.USE_AMT..card.STD_DD..mean.")
+
+train <- training(split)
+test <- testing(split)
+
+model3 <- lm(tapply.card.USE_AMT..card.STD_DD..mean. ~ covid + seoulcovid + daegucovid + seoulflowMean + daeguflowMean + cjseoul + cjdaegu, data = train)
+summary(model3)
+```
