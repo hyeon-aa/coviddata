@@ -1,0 +1,379 @@
+
+
+### wordcloud 그리기
+
+
+# 경로 설정
+setwd("C:/Users/Jin/Documents")
+getwd()
+
+# # 패키지 설치
+# install.packages("data.table")
+# install.packages("wordcloud")
+# install.packages("tm")
+# install.packages("rJava")
+# install.packages("C:/Users/Jin/Documents/NLP4kec_1.4.0.zip", repos = NULL)
+# install.packages("wordcloud2")
+# install.packages("tidyverse")
+# install.packages("magrittr")
+
+
+# 라이브러리
+library(data.table)
+library(wordcloud)
+library(tm)
+library(rJava)
+library(NLP4kec)
+library(wordcloud2)
+library(tidyverse)
+library(rlang)
+library(magrittr)
+
+cloud <- fread("2020 bigcontest data_wisenut.csv",encoding="UTF-8",sep="\7")
+```
+
+## 코로나 이전 word cloud
+
+# 단어 구분
+word_2019 <- ""
+
+for (i in 1:nrow(cloud)){
+  word_2019 <- paste(word_2019, cloud$UP_TOPIC_201902[i])
+  word_2019 <- paste(word_2019, cloud$UP_TOPIC_201903[i])
+  word_2019 <- paste(word_2019, cloud$UP_TOPIC_201904[i])
+  word_2019 <- paste(word_2019, cloud$UP_TOPIC_201905[i])
+}
+
+
+# 한글 제외 문자 삭제
+word_2019 <- word_2019 %>% stringr::str_remove_all(pattern = "[^가-힣]")
+
+# 단어 구분
+word_2019_data <- NLP4kec::r_parser_r(contentVector = word_2019, language = "ko")
+
+# 리스트 형태로 나누기
+word_2019_data <- strsplit(word_2019_data, split=" ")
+
+# 테이블화
+word2019_count  <- table(word_2019_data)
+
+# top50 선정
+word2019_top <- head(sort(word2019_count, decreasing = T), 50)
+
+# wordcloud 생성
+
+wordcloud2::wordcloud2(word2019_top, 
+                       color = "random-light",
+                       fontFamily = "NanumGothic")
+```
+
+
+## 코로나 이후 wordcloud
+
+# 단어 구분
+word_2020 <- ""
+
+for (i in 1:nrow(cloud)){
+  word_2020 <- paste(word_2020, cloud$UP_TOPIC_202002[i])
+  word_2020 <- paste(word_2020, cloud$UP_TOPIC_202003[i])
+  word_2020 <- paste(word_2020, cloud$UP_TOPIC_202004[i])
+  word_2020 <- paste(word_2020, cloud$UP_TOPIC_202005[i])
+}
+
+
+# 한글 제외 문자 삭제
+word_2020 <- word_2020 %>% stringr::str_remove_all(pattern = "[^가-힣]")
+
+# 단어 구분
+word_2020_data <- NLP4kec::r_parser_r(contentVector = word_2020, language = "ko")
+
+# 리스트 형태로 나누기
+word_2020_data <- strsplit(word_2020_data, split=" ")
+
+# 테이블화
+word2020_count  <- table(word_2020_data)  
+
+# top50 선정
+word2020_top <- head(sort(word2020_count, decreasing = T), 50)
+
+# wordcloud 생성
+
+wordcloud2::wordcloud2(word2020_top, 
+                       color = "random-light",
+                       fontFamily = "NanumGothic")
+
+
+
+
+### 코로나 전•후 유동인구 비교
+
+## (시간대별) 2019년 대구 유동인구 데이터
+
+library('data.table')
+
+time1902<-fread("4개지역_FLOW_TIME_201902.CSV",encoding="UTF-8")
+time1903<-fread("4개지역_FLOW_TIME_201903.CSV",encoding="UTF-8")
+time1904<-fread("4개지역_FLOW_TIME_201904.CSV",encoding="UTF-8")
+time1905<-fread("4개지역_FLOW_TIME_201905.CSV",encoding="UTF-8")
+
+daegu1902<-subset(time1902,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu1903<-subset(time1903,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu1904<-subset(time1904,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu1905<-subset(time1905,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+
+sum1902<-daegu1902[,5:28]
+daegu1902<-colSums(sum1902)
+daegu1902<-data.frame(daegu1902)
+
+sum1903<-daegu1903[,5:28]
+daegu1903<-colSums(sum1903)
+daegu1903<-data.frame(daegu1903)
+
+sum1904<-daegu1904[,5:28]
+daegu1904<-colSums(sum1904)
+daegu1904<-data.frame(daegu1904)
+
+sum1905<-daegu1905[,5:28]
+daegu1905<-colSums(sum1905)
+daegu1905<-data.frame(daegu1905)
+
+
+FlowDaegu2019<-cbind(daegu1902,daegu1903,daegu1904,daegu1905)
+View(FlowDaegu2019)
+
+
+
+
+## (시간대별) 2020년 대구 유동인구 데이터
+
+
+library('data.table')
+
+time2002<-fread("4개지역_FLOW_TIME_202002.CSV",encoding="UTF-8")
+time2003<-fread("4개지역_FLOW_TIME_202003.CSV",encoding="UTF-8")
+time2004<-fread("4개지역_FLOW_TIME_202004.CSV",encoding="UTF-8")
+time2005<-fread("4개지역_FLOW_TIME_202005.CSV",encoding="UTF-8")
+
+daegu2002<-subset(time2002,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu2003<-subset(time2003,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu2004<-subset(time2004,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu2005<-subset(time2005,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+
+sum2002<-daegu2002[,5:28]
+daegu2002<-colSums(sum2002)
+daegu2002<-data.frame(daegu2002)
+
+sum2003<-daegu2003[,5:28]
+daegu2003<-colSums(sum2003)
+daegu2003<-data.frame(daegu2003)
+
+sum2004<-daegu2004[,5:28]
+daegu2004<-colSums(sum2004)
+daegu2004<-data.frame(daegu2004)
+
+sum2005<-daegu2005[,5:28]
+daegu2005<-colSums(sum2005)
+daegu2005<-data.frame(daegu2005)
+
+
+FlowDaegu2020<-cbind(daegu2002,daegu2003,daegu2004,daegu2005)
+View(FlowDaegu2020)
+
+# 대구 2019 유동인구 vs 2020 유동인구 비교
+options("scipen"=100)
+
+# 대구 유동인구 평균 비교 그래프
+plot(rowMeans(FlowDaegu2019), ann=F, col="skyblue", type="o")
+lines(rowMeans(FlowDaegu2020), col="red", type="o")
+title(main="대구시 시간대 별 유동인구 평균", xlab="시간대 (시)", ylab="유동인구 수 (명)")
+
+legend("topleft", 
+       legend = c("2019 유동인구 평균", "2020 유동인구 평균"),
+       col=c("skyblue", "red"),
+       lty=1,
+       cex=0.9
+)
+
+## (시간대별) 2019년 서울 유동인구 데이터
+library('data.table')
+
+# time1902<-fread("4개지역_FLOW_TIME_201902.CSV",encoding="UTF-8")
+# time1903<-fread("4개지역_FLOW_TIME_201903.CSV",encoding="UTF-8")
+# time1904<-fread("4개지역_FLOW_TIME_201904.CSV",encoding="UTF-8")
+# time1905<-fread("4개지역_FLOW_TIME_201905.CSV",encoding="UTF-8")
+
+seoul1902<-subset(time1902,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul1903<-subset(time1903,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul1904<-subset(time1904,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul1905<-subset(time1905,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+
+sum1902<-seoul1902[,5:28]
+seoul1902<-colSums(sum1902)
+seoul1902<-data.frame(seoul1902)
+
+sum1903<-seoul1903[,5:28]
+seoul1903<-colSums(sum1903)
+seoul1903<-data.frame(seoul1903)
+
+sum1904<-seoul1904[,5:28]
+seoul1904<-colSums(sum1904)
+seoul1904<-data.frame(seoul1904)
+
+sum1905<-seoul1905[,5:28]
+seoul1905<-colSums(sum1905)
+seoul1905<-data.frame(seoul1905)
+
+
+FlowSeoul2019<-cbind(seoul1902,seoul1903,seoul1904,seoul1905)
+View(FlowSeoul2019)
+
+## (시간대별) 2020년 서울 유동인구 데이터
+library('data.table')
+
+# time2002<-fread("4개지역_FLOW_TIME_202002.CSV",encoding="UTF-8")
+# time2003<-fread("4개지역_FLOW_TIME_202003.CSV",encoding="UTF-8")
+# time2004<-fread("4개지역_FLOW_TIME_202004.CSV",encoding="UTF-8")
+# time2005<-fread("4개지역_FLOW_TIME_202005.CSV",encoding="UTF-8")
+
+seoul2002<-subset(time2002,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul2003<-subset(time2003,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul2004<-subset(time2004,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul2005<-subset(time2005,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+
+sum2002<-seoul2002[,5:28]
+seoul2002<-colSums(sum2002)
+seoul2002<-data.frame(seoul2002)
+
+sum2003<-seoul2003[,5:28]
+seoul2003<-colSums(sum2003)
+seoul2003<-data.frame(seoul2003)
+
+sum2004<-seoul2004[,5:28]
+seoul2004<-colSums(sum2004)
+seoul2004<-data.frame(seoul2004)
+
+sum2005<-seoul2005[,5:28]
+seoul2005<-colSums(sum2005)
+seoul2005<-data.frame(seoul2005)
+
+
+FlowSeoul2020<-cbind(seoul2002,seoul2003,seoul2004,seoul2005)
+View(FlowSeoul2020)
+
+# 서울 2019 유동인구 vs 2020 유동인구 비교
+options("scipen"=100)
+
+# 서울 유동인구 평균 비교 그래프
+plot(rowMeans(FlowSeoul2019), ann=F, col="skyblue", type="o")
+lines(rowMeans(FlowSeoul2020), col="red", type="o")
+title(main="서울시 시간대 별 유동인구 평균", xlab="시간대 (시)", ylab="유동인구 수 (명)")
+legend("topleft", 
+       legend = c("2019 유동인구 평균", "2020 유동인구 평균"),
+       col=c("skyblue", "red"),
+       lty=1,
+       cex=0.9
+
+
+### 모델 수립
+
+## 상관관계 반영 모델
+
+# ## 모델 수립
+# install.packages("readxl")
+# install.packages("tibble")
+# install.packages("rsample")
+
+library(readxl)
+library(ggplot2)
+library(tibble)
+library(dplyr)
+library('data.table')
+
+
+# 확진자 수 데이터
+covid_data <- fread("C:/Users/Jin/Documents/kr_regional_daily.csv", encoding="UTF-8")
+covid_data$date <- as.Date(as.character(covid_data$date), "%Y%m%d")
+seoul <- subset(covid_data, region == "서울" & date <= "2020-05-31" & date >= "2020-02-17")
+head(seoul)
+
+# 서울 유동인구 수
+seoulflow <- read.csv("seoulflow.csv")
+
+# 대구 유동인구 수
+daeguflow <- read.csv("daeguflow.csv")
+
+# 카드매출(식품)
+card <- fread("C:/Users/Jin/Documents/CARD_SPENDING_RESIDENT.txt")
+card$STD_DD <- as.Date(as.character(card$STD_DD), "%Y%m%d")
+head(card)
+
+food2020 <- subset(card, STD_DD >= "2020-02-17" & MCT_CAT_CD == 80 & (GU_CD == 140 | GU_CD == 350))
+head(food2020)
+
+
+# 식품 카드매출의 평균
+foodmean <- data.frame(tapply(food2020$USE_AMT, food2020$STD_DD, mean))
+foodmean <- rownames_to_column(foodmean)
+str(foodmean)
+
+str(seoul)
+
+
+#물류 데이터(식품)
+CJ <- read_excel("CJ.xlsx")
+CJ <- subset(CJ, CJ$DL_YMD >= 20200000)
+CJ$DL_YMD <- as.Date(as.character(CJ$DL_YMD), "%Y%m%d")
+
+foodcard <- subset(CJ,CTPV_NM == "서울특별시" &  DL_GD_LCLS_NM == "식품" & DL_YMD <= "2020-05-31" & DL_YMD >= "2020-02-17")
+foodcardmean <- data.frame(tapply(foodcard$INVC_CONT, foodcard$DL_YMD, mean))
+foodcardmean <- rownames_to_column(foodcardmean)
+foodcardmean
+
+
+
+# 데이터 프레임 만들기
+foodmean$covid <- seoul$confirmed # 서울 누적 확진자 수
+foodmean$seoulflowMean <- seoulflow$flowMean # 서울 유동인구 수(평균)
+foodmean$seoulflowSum <- seoulflow$flowSum # 서울 유동인구 수(합계)
+foodmean$daeguflowMean <- daeguflow$flowMean # 대구 유동인구 수(평균)
+foodmean$daeguflowSum <- daeguflow$flowSum # 대구 유동인구 수(합계)
+
+#서울 일일 신규 확진자 수를 불러오기 위한 data
+acc<-read_excel("covid_seoul.xlsx")
+acc<-subset(acc,acc$date >= 20200217)
+foodmean$acc <- acc$accum # 서울 일일 신규 확진자 수
+foodmean$cj <- foodcardmean$tapply.foodcard.INVC_CONT..foodcard.DL_YMD..mean. # CJ 물류 데이터(식품)
+
+# Stratified sampling (training set : test set = 70:30 분할)
+# install.packages("rsample")
+library(rsample)
+
+set.seed(123)
+split <- initial_split(foodmean, prop = 0.7, strata = "tapply.food2020.USE_AMT..food2020.STD_DD..mean.")
+
+food_train <- training(split)
+food_test <- testing(split)
+
+
+## feature들 사이의 multicolinearity 확인
+
+# install.packages("psych")
+# install.packages("caret")
+
+library(psych)
+library(caret)
+
+pairs.panels(food_train[c(2,3,4,6,8,9)])
+
+
+## 모델 수립
+
+# 상관관계 반영 모델 수립
+model2 <- lm(tapply.food2020.USE_AMT..food2020.STD_DD..mean. ~ covid + (seoulflowMean:daeguflowMean) + acc + cj, data = food_train)
+summary(model2)
+
+# 상관관계 반영 모델 RMSE 확인
+set.seed(123)
+food_Corr <- predict(model2, food_test)
+RMSE(food_Corr, food_test$tapply.food2020.USE_AMT..food2020.STD_DD..mean.)
+```
