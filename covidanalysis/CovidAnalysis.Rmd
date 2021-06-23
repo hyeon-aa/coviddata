@@ -30,7 +30,7 @@ library(rlang)
 library(magrittr)
 
 cloud <- fread("2020 bigcontest data_wisenut.csv",encoding="UTF-8",sep="\7")
-```
+
 
 ## 코로나 이전 word cloud
 
@@ -65,7 +65,7 @@ word2019_top <- head(sort(word2019_count, decreasing = T), 50)
 wordcloud2::wordcloud2(word2019_top, 
                        color = "random-light",
                        fontFamily = "NanumGothic")
-```
+
 
 
 ## 코로나 이후 wordcloud
