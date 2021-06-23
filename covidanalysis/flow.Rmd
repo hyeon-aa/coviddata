@@ -1,0 +1,202 @@
+
+
+### 유동인구 데이터 만들기
+
+
+## 2019년 서울 유동인구 데이터
+
+
+time1902<-fread("4개지역_FLOW_TIME_201902.CSV",encoding="UTF-8") #2019년 2월 유동인구
+time1903<-fread("4개지역_FLOW_TIME_201903.CSV",encoding="UTF-8") #2019년 3월 유동인구
+time1904<-fread("4개지역_FLOW_TIME_201904.CSV",encoding="UTF-8") #2019년 4월 유동인구
+time1905<-fread("4개지역_FLOW_TIME_201905.CSV",encoding="UTF-8") #2019년 5월 유동인구
+
+#서울 데이터만 따로 저장
+seoul1902<-subset(time1902,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul1903<-subset(time1903,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul1904<-subset(time1904,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul1905<-subset(time1905,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+
+sum1902<-seoul1902[,5:28]
+seoul_1902<-rowSums(sum1902) #유동인구 일별, 동별 합해줌
+seoul_1902<-matrix(seoul_1902)
+
+sum1903<-seoul1903[,5:28]
+seoul_1903<-rowSums(sum1903) #유동인구 일별, 동별 합해줌
+seoul_1903<-matrix(seoul_1903)
+
+sum1904<-seoul1904[,5:28]
+seoul_1904<-rowSums(sum1904) #유동인구 일별, 동별 합해줌
+seoul_1904<-matrix(seoul_1904)
+
+sum1905<-seoul1905[,5:28]
+seoul_1905<-rowSums(sum1905) #유동인구 일별, 동별 합해줌
+seoul_1905<-matrix(seoul_1905)
+
+day<-rbind(seoul1902[,2],seoul1903[,2],seoul1904[,2],seoul1905[,2]) #2019년 2~5월 날짜
+seoul_flow<-rbind(seoul_1902,seoul_1903,seoul_1904,seoul_1905)
+flow_2019<-cbind(day,seoul_flow)
+flow_2019_<-flow_2019[, sum(V1), by="STD_YMD"] #일별로 유동인구 합
+flow_2019_seoul<-subset(flow_2019_,STD_YMD>=20190217) #2월17일 이후 data
+
+flow_mean_2019<-flow_2019[, mean(V1), by="STD_YMD"] #일별로 유동인구 평균
+flow_mean_r_2019<-subset(flow_mean_2019,STD_YMD>=20190217)
+flow_2019_seoul$mean<-flow_mean_r_2019$V1
+
+flow_2019_seoul$confirmed<-NA #2019년 코로나 확진자 수 0명인 열 추가
+flow_2019_seoul[is.na(flow_2019_seoul)]=0
+
+
+## 2020년 서울 유동인구 데이터
+
+
+covid<-fread("kr_regional_daily.csv",encoding="UTF-8")
+seoul<-subset(covid,region=="서울")
+seoul<-subset(seoul,date<20200601)
+
+time2002<-fread("4개지역_FLOW_TIME_202002.CSV",encoding="UTF-8") #2020년 2월 유동인구
+time2003<-fread("4개지역_FLOW_TIME_202003.CSV",encoding="UTF-8") #2020년 3월 유동인구
+time2004<-fread("4개지역_FLOW_TIME_202004.CSV",encoding="UTF-8") #2020년 4월 유동인구
+time2005<-fread("4개지역_FLOW_TIME_202005.CSV",encoding="UTF-8") #2020년 5월 유동인구
+
+#서울 데이터만 따로 저장
+seoul2002<-subset(time2002,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul2003<-subset(time2003,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul2004<-subset(time2004,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+seoul2005<-subset(time2005,HDONG_NM=="소공동"|HDONG_NM=="회현동"|HDONG_NM=="명동"|HDONG_NM=="필동"|HDONG_NM=="장충동"|HDONG_NM=="광희동"|HDONG_NM=="을지로동"|HDONG_NM=="신당동"|HDONG_NM=="다산동"|HDONG_NM=="약수동"|HDONG_NM=="청구동"|HDONG_NM=="신당5동"|HDONG_NM=="동화동"|HDONG_NM=="황학동"|HDONG_NM=="중림동"|HDONG_NM=="월계1동"|HDONG_NM=="월계2동"|HDONG_NM=="월계3동"|HDONG_NM=="공릉1동"|HDONG_NM=="공릉2동"|HDONG_NM=="하계1동"|HDONG_NM=="하계2동"|HDONG_NM=="월계1동"|HDONG_NM=="중계본동"|HDONG_NM=="중계1동"|HDONG_NM=="중계4동"|HDONG_NM=="중계2.3동"|HDONG_NM=="중계4동"|HDONG_NM=="상계1동"|HDONG_NM=="상계2동"|HDONG_NM=="상계3.4동"|HDONG_NM=="상계5동"|HDONG_NM=="상계6.7동"|HDONG_NM=="상계8동"|HDONG_NM=="상계9동"|HDONG_NM=="상계10동")
+
+sum2002<-seoul2002[,5:28]
+seoul_2002<-rowSums(sum2002) #유동인구 일별, 동별 합해줌
+seoul_2002<-matrix(seoul_2002)
+
+sum2003<-seoul2003[,5:28]
+seoul_2003<-rowSums(sum2003) #유동인구 일별, 동별 합해줌
+seoul_2003<-matrix(seoul_2003)
+
+sum2004<-seoul2004[,5:28]
+seoul_2004<-rowSums(sum2004) #유동인구 일별, 동별 합해줌
+seoul_2004<-matrix(seoul_2004)
+
+sum2005<-seoul2005[,5:28]
+seoul_2005<-rowSums(sum2005) #유동인구 일별, 동별 합해줌
+seoul_2005<-matrix(seoul_2005)
+
+day<-rbind(seoul2002[,2],seoul2003[,2],seoul2004[,2],seoul2005[,2]) #2020년 2~5월 날짜
+seoul_flow<-rbind(seoul_2002,seoul_2003,seoul_2004,seoul_2005)
+flow<-cbind(day,seoul_flow)
+flowflow<-flow[, sum(V1), by="STD_YMD"] #일별로 유동인구 합
+date_flow<-subset(flowflow,STD_YMD>=20200217) #2월17일 이후 data
+flow_mean<-flow[, mean(V1), by="STD_YMD"] #일별로 유동인구 평균
+flow_mean_r<-subset(flow_mean,STD_YMD>=20200217)
+date_flow$mean<-flow_mean_r$V1
+date_flow$confirmed<-seoul$confirmed #코로나 확진자 수 열 추가
+
+
+## 2019년과 2020년 서울의 유동인구+확진자 수
+
+
+seoulflowpluscovid<-rbind(date_flow,flow_2019_seoul) #2020년 2019년 데이터 합치기
+names(seoulflowpluscovid)[2:3]<-c("flowSum","flowMean")
+write.csv(seoulflowpluscovid,"seoulflow.csv") #서울의 2020년 2019년 유동인구+확진자수 csv 파일
+
+
+## 2019년 대구 유동인구 데이터
+
+
+
+time1902<-fread("4개지역_FLOW_TIME_201902.CSV",encoding="UTF-8") #2019년 2월 유동인구
+time1903<-fread("4개지역_FLOW_TIME_201903.CSV",encoding="UTF-8") #2019년 3월 유동인구
+time1904<-fread("4개지역_FLOW_TIME_201904.CSV",encoding="UTF-8") #2019년 4월 유동인구
+time1905<-fread("4개지역_FLOW_TIME_201905.CSV",encoding="UTF-8") #2019년 5월 유동인구
+
+#대구 데이터만 따로 저장
+daegu1902<-subset(time1902,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu1903<-subset(time1903,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu1904<-subset(time1904,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu1905<-subset(time1905,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+
+sum1902<-daegu1902[,5:28]
+daegu_1902<-rowSums(sum1902) #유동인구 일별, 동별 합해줌
+daegu_1902<-matrix(daegu_1902)
+
+sum1903<-daegu1903[,5:28]
+daegu_1903<-rowSums(sum1903) #유동인구 일별, 동별 합해줌
+daegu_1903<-matrix(daegu_1903)
+
+sum1904<-daegu1904[,5:28]
+daegu_1904<-rowSums(sum1904) #유동인구 일별, 동별 합해줌
+daegu_1904<-matrix(daegu_1904)
+
+sum1905<-daegu1905[,5:28]
+daegu_1905<-rowSums(sum1905) #유동인구 일별, 동별 합해줌
+daegu_1905<-matrix(daegu_1905)
+
+
+day<-rbind(daegu1902[,2],daegu1903[,2],daegu1904[,2],daegu1905[,2]) #2019년 2~5월 날짜
+daegu_flow<-rbind(daegu_1902,daegu_1903,daegu_1904,daegu_1905)
+flow<-cbind(day,daegu_flow)
+flowflow<-flow[, sum(V1), by="STD_YMD"] #일별로 유동인구 합
+date_flow<-subset(flowflow,STD_YMD>=20190217) #2월17일 이후 data
+
+flow_mean<-flow[, mean(V1), by="STD_YMD"] #일별로 유동인구 평균
+flow_mean_r<-subset(flow_mean,STD_YMD>=20190217)
+date_flow$mean<-flow_mean_r$V1
+
+date_flow$confirmed<-NA #2019년 코로나 확진자 수 0명인 열 추가
+date_flow[is.na(date_flow)]=0
+
+
+## 대구 2020년 유동인구 데이터
+
+
+
+time2002<-fread("4개지역_FLOW_TIME_202002.CSV",encoding="UTF-8")
+time2003<-fread("4개지역_FLOW_TIME_202003.CSV",encoding="UTF-8")
+time2004<-fread("4개지역_FLOW_TIME_202004.CSV",encoding="UTF-8")
+time2005<-fread("4개지역_FLOW_TIME_202005.CSV",encoding="UTF-8")
+
+covid<-fread("kr_regional_daily.csv",encoding="UTF-8")
+daegu<-subset(covid,region=="대구")
+daegu<-subset(daegu,date<20200601)
+
+#대구 데이터만 따로 저장
+daegu2002<-subset(time2002,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu2003<-subset(time2003,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu2004<-subset(time2004,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+daegu2005<-subset(time2005,HDONG_NM=="범어1동"|HDONG_NM=="범어2동"|HDONG_NM=="범어3동"|HDONG_NM=="범어4동"|HDONG_NM=="만촌1동"|HDONG_NM=="만촌2동"|HDONG_NM=="만촌3동"|HDONG_NM=="수성1가동"|HDONG_NM=="수성2.3가동"|HDONG_NM=="수성4가동"|HDONG_NM=="황금1동"|HDONG_NM=="황금2동"|HDONG_NM=="중동"|HDONG_NM=="상동"|HDONG_NM=="파동"|HDONG_NM=="두산동"|HDONG_NM=="지산1동"|HDONG_NM=="지산2동"|HDONG_NM=="범물1동"|HDONG_NM=="범물2동"|HDONG_NM=="고산1동"|HDONG_NM=="고산2동"|HDONG_NM=="고산3동"|HDONG_NM=="동인동"|HDONG_NM=="삼덕동"|HDONG_NM=="성내1동"|HDONG_NM=="성내2동"|HDONG_NM=="성내3동"|HDONG_NM=="대신동"|HDONG_NM=="남산1동"|HDONG_NM=="남산2동"|HDONG_NM=="남산3동"|HDONG_NM=="남산4동"|HDONG_NM=="대봉1동"|HDONG_NM=="대봉2동")
+
+sum2002<-daegu2002[,5:28]
+daegu_2002<-rowSums(sum2002) #유동인구 일별, 동별 합해줌
+daegu_2002<-matrix(daegu_2002)
+
+sum2003<-daegu2003[,5:28]
+daegu_2003<-rowSums(sum2003) #유동인구 일별, 동별 합해줌
+daegu_2003<-matrix(daegu_2003)
+
+sum2004<-daegu2004[,5:28]
+daegu_2004<-rowSums(sum2004) #유동인구 일별, 동별 합해줌
+daegu_2004<-matrix(daegu_2004)
+
+sum2005<-daegu2005[,5:28]
+daegu_2005<-rowSums(sum2005) #유동인구 일별, 동별 합해줌
+daegu_2005<-matrix(daegu_2005)
+
+day<-rbind(daegu2002[,2],daegu2003[,2],daegu2004[,2],daegu2005[,2]) #2020년 2~5월 날짜
+daegu_flow_2020<-rbind(daegu_2002,daegu_2003,daegu_2004,daegu_2005)
+flow_2020<-cbind(day,daegu_flow_2020)
+flowflow_2020<-flow_2020[, sum(V1), by="STD_YMD"] #일별로 유동인구 합
+date_flow_2020<-subset(flowflow_2020,STD_YMD>=20200217) #2월17일 이후 data
+
+flow_mean_2020<-flow_2020[, mean(V1), by="STD_YMD"] #일별로 유동인구 평균
+flow_mean_r_2020<-subset(flow_mean_2020,STD_YMD>=20200217)
+date_flow_2020$mean<-flow_mean_r_2020$V1
+date_flow_2020$confirmed<-daegu$confirmed #코로나 확진자 수 열 추가
+
+
+## 2019년과 2020년 대구의 유동인구+확진자 수
+
+
+daeguflowpluscovid<-rbind(date_flow_2020,date_flow) #2020년 2019년 데이터 합치기
+names(daeguflowpluscovid)[2:3]<-c("flowSum","flowMean")
+write.csv(daeguflowpluscovid,"daeguflow.csv") #대구의 2020년 2019년 유동인구+확진자수 csv 파일
+
